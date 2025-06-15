@@ -56,7 +56,7 @@ function Matches() {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({ 
-          god_id: 8 // Aquí hay que editar despues para que el usuario pueda elegir su dios
+          god_id: 1 // Aquí hay que editar despues para que el usuario pueda elegir su dios
         })
       });
 
