@@ -1,0 +1,94 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; 
+  /* background-image: url('../assets/navbar-bg.webp'); */
+  background-size: cover;
+  background-position: center;
+  padding: 2px 12px; /* Reducido el padding vertical de 6px a 2px */
+  display: flex;
+  gap: 10px; /* Reducido el espacio entre elementos de 16px a 10px */
+  align-items: center;
+  border-bottom: 0px solid #d9b3ff;
+  background-color: #06040c;
+  font-family: 'Courier New', monospace;
+  height: 40px; /* Altura fija más pequeña */
+}
+
+.nav-link {
+  background-color: rgba(255, 255, 255, 0.5); 
+  padding: 4px 10px; /* Reducido de 8px 12px a 4px 10px */
+  border-radius: 6px;
+  color: #6b2f8a;
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  font-size: 0.9rem; /* Consistente con nav-button */
+}
+
+.nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #4b1466;
+  transform: scale(1.05);
+}
+
+.push-right {
+  margin-left: auto;
+}
+
+
+
+
+.nav-button {
+  background-color: rgba(243, 162, 70, 0.9); 
+  color: white;
+  border: none;
+  padding: 4px 10px; /* Reducido el padding vertical de 10px a 4px */
+  cursor: pointer;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 0.9rem; /* Texto ligeramente más pequeño */
+  line-height: 1.2; /* Altura de línea ajustada */
+}
+
+.nav-button:hover {
+  background-color: rgba(255, 179, 220, 0.9);
+  transform: scale(1.05);
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.logo {
+  width: 20px; /* Reducido de 32px a 20px */
+  height: 32px; /* Reducido de 60px a 32px */
+  object-fit: cover;
+  object-position: center;
+  border: none;
+  background: none;
+  margin: 0; /* Eliminar cualquier margen */
+  padding: 0; /* Eliminar cualquier padding */
+}
+
+/* Asegurar que todos los elementos de navbar tengan altura adecuada */
+.navbar button {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+/* Asegurar espacio para el contenido debajo del navbar */
+body {
+  padding-top: 42px; /* Ligeramente mayor que la altura del navbar */
+}
+
+/* Ajustar hover para que no aumente el tamaño vertical */
+.nav-button:hover, .nav-link:hover {
+  transform: scale(1.03); /* Reducido de 1.05 para que crezca menos */
+}

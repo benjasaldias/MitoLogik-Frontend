@@ -1,0 +1,108 @@
+
+.matches-container {
+  position: fixed;
+  top: 0; 
+  left: 0;
+  width: 100vw; 
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.matches-panels {
+  display: flex;
+  gap: 20px;
+  max-width: 1200px;
+  width: 100%;
+}
+
+.matches-panel {
+  flex: 1;
+  background-color: #2c2c2c;
+  color: white;
+  border-radius: 1rem;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  padding: 1.5rem;
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+.matches-panel h2 {
+  color: #c28832;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.matches-list {
+  list-style: none;
+  padding: 0;
+}
+
+.match-item {
+  background-color: #3a3a3a;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #c28832;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.match-info h3 {
+  margin: 0 0 0.5rem 0;
+  color: #c28832;
+}
+
+.match-info p {
+  margin: 0.25rem 0;
+}
+
+.match-button {
+  background-color: #c28832;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.match-button:hover {
+  background-color: #a17229;
+}
+
+.create-match-button {
+  background-color: #c28832;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  margin-bottom: 1.5rem;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.create-match-button:hover {
+  background-color: #a17229;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .matches-panels {
+    flex-direction: column;
+  }
+  
+  .matches-panel {
+    max-height: none;
+  }
+}

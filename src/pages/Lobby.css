@@ -1,0 +1,136 @@
+body {
+  background-color: #121212;
+  color: #ffe;
+  font-family: 'Press Start 2P', monospace;
+}
+
+.home-container {
+  display: flex;
+  justify-content: center;
+  padding: 30px 10px;
+  background-color: rgb(7, 22, 54);
+
+}
+
+.register-main {
+  background-color: #1a0303;
+  border: 4px solid #ffce54;
+  padding: 30px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 700px;
+  box-shadow: 0 0 10px #ffce54cc;
+}
+
+h2, h3 {
+  color: #ffe37d;
+  text-shadow: 1px 1px #302000;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+li {
+  background-color: #282828;
+  border: 2px dashed #ffce54;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 6px;
+  color: #ffefbf;
+  font-size: 10px;
+  text-align: center;
+}
+
+button {
+  font-family: 'Press Start 2P', monospace;
+  background-color: #ffce54;
+  border: 2px solid #d9aa36;
+  color: #222;
+  font-size: 10px;
+  padding: 10px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 15px;
+  box-shadow: 0 2px #d9aa36;
+  transition: all 0.2s;
+}
+
+button:hover {
+  background-color: #ffe68a;
+  box-shadow: 0 0 10px #ffe68a;
+  transform: scale(1.05);
+}
+
+button:disabled {
+  background-color: #666;
+  border-color: #444;
+  color: #bbb;
+  cursor: not-allowed;
+}
+
+.god-selector {
+  margin-top: 30px;
+}
+
+.god-grid {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.start-game-button {
+  background-color: #c28832;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  margin-top: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  display: block; /* Para centrar con margin auto */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.start-game-button:hover {
+  background-color: #e0a042;
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(224, 160, 66, 0.5);
+}
+
+.start-game-button:active {
+  transform: scale(0.98);
+}
+
+.host-info {
+  margin: 20px 0;
+  padding: 10px;
+  background-color: rgba(194, 136, 50, 0.2);
+  border-left: 4px solid #c28832;
+  border-radius: 5px;
+}
+
+.host-info p {
+  color: #ffe37d;
+  margin: 0;
+}
+
+.start-game-button:disabled {
+  background-color: #7f7f7f;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.start-game-button:disabled:hover {
+  background-color: #7f7f7f;
+  transform: none;
+  box-shadow: none;
+}

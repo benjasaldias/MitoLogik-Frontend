@@ -1,0 +1,10 @@
+.register-main {
+  padding: 2rem;
+  text-align: center;
+  background-color: #2c2c2c;
+  color: white;
+  border-radius: 1rem;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  max-width: 300px;
+  width: 100%;  
+}

@@ -1,0 +1,66 @@
+.god-selector {
+  text-align: center;
+}
+
+.god-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 5px;
+  justify-items: center;
+  margin: 20px 0;
+}
+
+.god-card {
+  position: relative;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  transition: border 0.2s, transform 0.2s;
+  background-color: #1a1a1a;
+  text-align: center;
+}
+
+.god-card img {
+  width: 100px;
+  height: auto;
+  image-rendering: pixelated; 
+  transition: filter 0.3s;
+  z-index: 1;
+}
+
+/* 💡 Efecto B/N al hacer hover */
+.god-card:hover img {
+  filter: grayscale(100%);
+}
+
+/* 💡 Texto sobre la imagen (retro) */
+.god-card .god-name-overlay {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: rgb(53, 255, 3);
+  font-family: 'Press Start 2P', monospace; /* tipografía retro */
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.god-card:hover .god-name-overlay {
+  opacity: 1;
+}
+
+.god-card.selected .god-name-overlay {
+  opacity: 1;
+}
+
+.god-card.selected {
+  border-color: gold;
+  background-color: #568a56;
+}
