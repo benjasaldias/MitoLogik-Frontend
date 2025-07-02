@@ -27,7 +27,7 @@ function MatchCreate() {
 
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.message || 'No se pudo crear la partida');
+        throw new Error(err.error || 'No se pudo crear la partida');
       }
 
       const data = await res.json();

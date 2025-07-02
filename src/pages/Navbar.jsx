@@ -12,9 +12,7 @@ function Navbar() {
     localStorage.removeItem('user');
     navigate('/login');
   };
-  const { user } = userAuth();
-
-  console.log(user);
+  
   return (
     
     <nav className="navbar">
@@ -37,7 +35,7 @@ function Navbar() {
         </button>
         
         <button className="nav-button" onClick={() => navigate('/about')}>Nosotros</button>
-        <button className="nav-button" onClick={() => navigate('/Perfil')}>Perfil</button>
+        <button className="nav-button" onClick={() => navigate('/profile')}>Perfil</button>
         <button className="nav-button" onClick={() => navigate('/matches')}>Jugar</button>
         <button className="nav-button" onClick={() => navigate('/instructions')}>Instrucciones</button>
         <button className="nav-button" onClick={handleLogout}>Logout</button>

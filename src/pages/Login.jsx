@@ -26,23 +26,20 @@ function Login() {
         localStorage.setItem('user', JSON.stringify({
           id: data.user.id,
           email: data.user.email,
-          username: data.user.username
+          username: data.user.username,
+          games_won: data.user.games_won,
+          profilePic: data.user.profilePic
         }));
         console.log('DATA:', data);
         console.log('data.user.id:', data.user.id);
 
-        login({
-          id: data.user.id,
-          username: data.user.username,
-          email: data.user.email,
-          password: data.user.passwords
-        })
+        
 
         // alert('Inicio de sesión exitoso');
         navigate('/');
       } else {
         const err = await res.json();
-        alert('Error: ' + (err.message || 'Credenciales incorrectas'));
+        alert('Error: ' + (err.error));
       }
     } catch (error) {
       alert('Error de red' + error.message);

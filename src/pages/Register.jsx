@@ -7,6 +7,7 @@ function Register() {
   const [password, setPassword] = useState('');
   const [profilePic, setProfilePic] = useState('');
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -25,9 +26,13 @@ function Register() {
       alert('Usuario registrado con éxito');
     } else {
       const err = await res.json();
-      alert('Error: ' + (err.message || 'Registro fallido'));
+      alert('Error: ' + (err.error || 'Registro fallido'));
     }
+
+
   };
+
+  
 
   return (
     <div className="home-container">

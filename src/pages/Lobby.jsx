@@ -9,6 +9,16 @@ function Lobby() {
   const [players, setPlayers] = useState([]);
   const navigate = useNavigate();
 
+
+  const gods = [
+    { id: 1, name: 'Zeus'},
+    { id: 2, name: 'Hades'},
+    { id: 3, name: 'Poseidon'},
+    { id: 4, name: 'Ares'},
+    { id: 5, name: 'Apolo'},
+    { id: 6, name: 'Hermes'}
+  ];
+
   // Obtener y parsear el objeto de usuario desde localStorage
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   
@@ -20,6 +30,7 @@ function Lobby() {
       console.log("¿Es el usuario el host?:", user.id === match.host_user_id);
     }
   }, [match, user.id]);
+
 
   useEffect(() => {
     const fetchMatch = async () => {
@@ -119,7 +130,73 @@ function Lobby() {
       console.log("ID del usuario actual:", currentUserId);
       console.log("Jugador del usuario actual:", userPlayer);
     }
-  }, [players, currentUserId, userPlayer]);
+  }, [currentUserId, userPlayer]);
+
+  useEffect(() => {
+  const fetchUsernames = async () => {
+    try {
+      console.log("[fetchUsernames] Iniciando...");
+
+      // 1. Extraer user_ids únicos
+      const uniqueUserIds = [...new Set(players.map(p => p.user_id))];
+      console.log("[fetchUsernames] IDs únicos:", uniqueUserIds);
+
+      // 2. Crear promesas para cada fetch
+      const userFetches = uniqueUserIds.map(async (userId) => {
+        try {
+          console.log(`[fetchUsernames] Buscando username para user_id=${userId}...`);
+          const res = await fetch(`${import.meta.env.VITE_API_URL}/users/${userId}`);
+
+          if (!res.ok) {
+            const errText = await res.text();
+            console.error(`[fetchUsernames] Error en respuesta de user ${userId}:`, errText);
+            return { userId, username: 'Error' };
+          }
+
+          const data = await res.json();
+          console.log(`[fetchUsernames] Username recibido para user_id=${userId}:`, data.user.username);
+          return { userId, username: data.user.username };
+        } catch (innerErr) {
+          console.error(`[fetchUsernames] Error al obtener user ${userId}:`, innerErr);
+          return { userId, username: 'Error' };
+        }
+      });
+
+      // 3. Ejecutar todo en paralelo
+      const usernameResults = await Promise.all(userFetches);
+      console.log("[fetchUsernames] Resultados:", usernameResults);
+
+      // 4. Mapear user_id => username
+      const usernameMap = {};
+      usernameResults.forEach(({ userId, username }) => {
+        usernameMap[userId] = username;
+      });
+      console.log("[fetchUsernames] Mapa final de usernames:", usernameMap);
+
+      // 5. Agregar los usernames a cada jugador
+      const playersWithUsername = players.map(p => ({
+        ...p,
+        username: usernameMap[p.user_id] || 'Desconocido'
+      }));
+
+      console.log("[fetchUsernames] Jugadores finales con username:", playersWithUsername);
+      setPlayers(playersWithUsername);
+
+    } catch (err) {
+      console.error("[fetchUsernames] Error inesperado:", err);
+    }
+  };
+
+  // Evitar múltiples llamadas si ya tienen username
+  if (players.length > 0 && !players[0].username) {
+    console.log("[useEffect] Ejecutando fetchUsernames...");
+    fetchUsernames();
+  } else {
+    console.log("[useEffect] No se ejecuta fetchUsernames (jugadores vacíos o ya tienen username)");
+  }
+}, [players]);
+
+
 
   const handleGodSelection = async (newGodId) => {
     if (!userPlayer) return;
@@ -164,7 +241,7 @@ function Lobby() {
         <ul>
           {players.map((p) => (
             <li key={p.id}>
-              {p.username || `Jugador ${p.id}`} — Dios ID: {p.god_id ?? 'No seleccionado'}
+              Nombre Jugador: {p.username} — Dios: {p.god_id ? (gods.find(g => g.id === p.god_id)?.name || 'Desconocido') : 'No seleccionado'}
             </li>
           ))}
         </ul>

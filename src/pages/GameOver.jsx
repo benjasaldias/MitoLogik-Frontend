@@ -87,6 +87,27 @@ function GameOver() {
               winnerUsername = winnerData.username;
               console.log('Nombre del ganador encontrado (directamente):', winnerUsername);
             }
+             const nuevosWins = winnerData.user.games_won + 1;
+             const updateRes = await fetch(`${import.meta.env.VITE_API_URL}/profiles/${winnerPlayer.user_id}`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({
+                  user_id:  winnerPlayer.user_id,
+                  avatar: winnerPlayer.profilePic,
+                  games_won: nuevosWins
+                 })
+            });
+
+            if (updateRes.ok) {
+              console.log('Se actualizaron Juegos ganados');
+            } else {
+              console.error('Error de Servidor: No se pudieron actualizar juegos ganados');
+            }
+
+
           }
         } catch (err) {
           console.error('Error al obtener el nombre del ganador:', err);

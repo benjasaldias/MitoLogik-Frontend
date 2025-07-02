@@ -9,6 +9,7 @@ import Lobby from '../pages/Lobby';
 import Instructions from '../pages/Instructions';
 import About from '../pages/About';
 import GameOver from '../pages/GameOver';
+import Perfil from '../pages/Perfil';
 
 function Routing() {
   return (
@@ -25,6 +26,7 @@ function Routing() {
         <Route path="/create-match" element={<MatchCreate />} />
         <Route path="/matches/:id" element={<MatchDetail />} />
         <Route path="*" element={<h2>Página no encontrada</h2>} />
+        <Route path="/profile" element={<Perfil />} />
       </Routes>
     
   );
