@@ -88,7 +88,7 @@ function GameOver() {
               console.log('Nombre del ganador encontrado (directamente):', winnerUsername);
             }
              const nuevosWins = winnerData.user.games_won + 1;
-             const updateRes = await fetch(`${import.meta.env.VITE_API_URL}/profile/${winnerPlayer.user_id}`, {
+             const updateRes = await fetch(`${import.meta.env.VITE_API_URL}/profiles/${winnerPlayer.user_id}`, {
                 method: 'PUT',
                 headers: {
                   'Content-Type': 'application/json',
