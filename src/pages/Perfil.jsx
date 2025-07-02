@@ -41,7 +41,7 @@ function Perfil() {
     localStorage.setItem('user', JSON.stringify(updatedUser));
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/profiles/${updatedUser.id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/profile/${updatedUser.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json',
                    'Authorization': `Bearer ${localStorage.getItem('token')}`},
