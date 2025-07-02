@@ -38,14 +38,14 @@ function Login() {
           password: data.user.passwords
         })
 
-        alert('Inicio de sesión exitoso');
+        // alert('Inicio de sesión exitoso');
         navigate('/');
       } else {
         const err = await res.json();
         alert('Error: ' + (err.message || 'Credenciales incorrectas'));
       }
     } catch (error) {
-      alert('Error de red: ' + error.message);
+      alert('Error de red' + error.message);
     }
   };
 

@@ -56,7 +56,7 @@ function Matches() {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({ 
-          god_id: 1 // Aquí hay que editar despues para que el usuario pueda elegir su dios
+          god_id: 8 // Aquí hay que editar despues para que el usuario pueda elegir su dios
         })
       });
 
@@ -81,7 +81,9 @@ function Matches() {
             <p>No estás participando en ninguna partida.</p>
           ) : (
             <ul className="matches-list">
-              {userMatches.map(match => (
+              {userMatches
+              .filter(match => match.state !== 2 && match.state !== 2) // no mostrar las terminadas
+              .map(match => (
                 <li key={match.id} className="match-item">
                   <div className="match-info">
                     <h3>{match.name}</h3>
@@ -99,18 +101,28 @@ function Matches() {
                       // Match state puede ser string en lugar de número
                       // Comparamos como string para evitar problemas de tipo
                       const isWaiting = match.state === 0 || match.state === '0';
+                      const isFinished = match.state === 2 || match.state === '2';
                       
-                      // Si la partida está en espera (state === 0), ir al lobby
-                      // Si ya está en curso, ir a la vista de la partida
-                      const destination = isWaiting 
-                        ? `/matches/${match.id}/lobby` 
-                        : `/matches/${match.id}`;
+                      // Determinar la ruta adecuada según el estado
+                      let destination;
+                      if (isWaiting) {
+                        destination = `/matches/${match.id}/lobby`; // Lobby para partidas no iniciadas
+                      } else if (isFinished) {
+                        destination = `/matches/${match.id}/gameover`; // GameOver para partidas finalizadas
+                      } else {
+                        destination = `/matches/${match.id}`; // Vista de juego para partidas en curso
+                      }
                       
                       console.log('Navigating to:', destination);
                       navigate(destination);
                     }}
                   >
-                    {match.state === 0 || match.state === '0' ? 'Ir al Lobby' : 'Ver partida'}
+                    {match.state === 0 || match.state === '0' 
+                      ? 'Ir al Lobby' 
+                      : (match.state === 2 || match.state === '2'
+                         ? 'Ver resultado'
+                         : 'Ver partida')
+                    }
                   </button>
                 </li>
               ))}

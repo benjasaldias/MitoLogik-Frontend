@@ -8,6 +8,7 @@ import MatchDetail from '../pages/MatchDetail';
 import Lobby from '../pages/Lobby';
 import Instructions from '../pages/Instructions';
 import About from '../pages/About';
+import GameOver from '../pages/GameOver';
 
 function Routing() {
   return (
@@ -17,6 +18,7 @@ function Routing() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/matches/:id/lobby" element={<Lobby />} />
+        <Route path="/matches/:matchId/gameover" element={<GameOver />} />
         <Route path="/instructions" element={<Instructions />} />
         <Route path="/about" element={<About />} />
         <Route path="/matches" element={<Matches />} />

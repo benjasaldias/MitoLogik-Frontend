@@ -128,7 +128,7 @@ function PlayerInfo({ matchId, currentPlayerId }) {
             <div className="player-stats">
               <p><span>Oro:</span> {currentPlayer.gold || 0}</p>
               <p><span>Dios:</span> {currentPlayer.god_id || "No seleccionado"}</p>
-              <p><span>Aldeas:</span> {currentPlayer.villages_count || 0}</p>
+              {/* <p><span>Aldeas:</span> {currentPlayer.villages_count || 0}</p> */}
             </div>
           </div>
         )}

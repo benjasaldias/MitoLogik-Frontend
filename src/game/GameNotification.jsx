@@ -4,7 +4,7 @@ import './GameNotification.css';
 // Importar efectos de sonido
 import confirmationSound from '../assets/sounds/confirmation_002.mp3';
 import errorSound from '../assets/sounds/glitch_001.mp3';
-import actionSound from '../assets/sounds/confirmation_003.mp3';
+import actionSound from '../assets/sounds/drop_003.mp3';
 
 function GameNotification({ message, type = 'info', duration = 3000, onClose }) {
   const [isVisible, setIsVisible] = useState(true);

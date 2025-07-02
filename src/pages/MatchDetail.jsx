@@ -7,9 +7,17 @@ import './MatchDetail.css';
 
 const TROOP_STATS = {
   1: { type: 1, name: 'warrior',  speed: 4, health: 100, damage: 25, cost: 50 },
-  2: { type: 2, name: 'archer', speed: 3, health: 80,  damage: 30, cost: 80 },
-  3: { type: 3, name: 'knight', speed: 5, health: 120, damage: 35, cost: 120 },
-  4: { type: 4, name: 'skeleton', speed: 3, health: 60,  damage: 15, cost: 20 }
+  2: { type: 2, name: 'archer', speed: 2, health: 80,  damage: 30, cost: 80 },
+  3: { type: 3, name: 'knight', speed: 5, health: 180, damage: 45, cost: 120 },
+  4: { type: 4, name: 'skeleton', speed: 5, health: 60,  damage: 15, cost: 20 }
+};
+
+const GOD_ACTION_COSTS = {
+  1: 700,
+  2: 0,
+  3: 0,
+  4: 1000,
+  5: 1000 
 };
 
 const GOD_NAMES = {
@@ -143,6 +151,44 @@ function MatchDetail() {
     }
   };
 
+  const handleUseGodAction = async () => {
+    
+  try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/matches/${id}/actions`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          player_id: currentPlayerId,
+          type: 'summon_god',
+
+        })
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        console.error('Detalles del error:', errorData);
+        throw new Error('No se pudo invocar al dios');
+      }
+
+
+    const data = await res.json(); 
+    if (res.ok) {
+      setNotification({ message: '¡Habilidad usada!', type: 'success' });
+      // Opcional: recargar el tablero
+    } else {
+      setNotification({ message: data.error || 'No se pudo usar la habilidad', type: 'error' });
+    }
+  } catch (err) {
+    console.error(err);
+    // alert(err);
+    setNotification({ message: 'Error al usar habilidad', type: 'error' });
+  }
+};
+
+
   // Función para obtener datos actualizados de la partida
   const fetchMatchData = async () => {
     try {
@@ -160,12 +206,18 @@ function MatchDetail() {
       
       console.log('Match data in MatchDetail:', data);
       
-      // Verificar si la partida está en progreso
-      // Comparamos state con '0' o 0 para manejar tanto strings como números
+      // Verificar el estado de la partida
+      // Si state = 0 (no iniciada), redirigir al lobby
       if (data.state === 0 || data.state === '0') {
         console.log('Match is not in progress, redirecting to lobby');
-        // Si no está en progreso (state = 0), redirigir al lobby
         navigate(`/matches/${id}/lobby`);
+        return false;
+      }
+      
+      // Si state = 2 (finalizada), redirigir a la pantalla de GameOver
+      if (data.state === 2 || data.state === '2') {
+        console.log('Match is over, redirecting to game over screen');
+        navigate(`/matches/${id}/gameover`);
         return false;
       }
       
@@ -233,6 +285,10 @@ function MatchDetail() {
   const isPlayerBase = (tile) => {
     if (!tile || !match) return false;
     
+    if (tile.player_id == currentPlayerId) {
+      return true;
+    }
+
     return (
       (tile.x === 1 && tile.y === 1 && match.host_user_id === currentUserId) || 
       (tile.x === 12 && tile.y === 12 && match.host_user_id !== currentUserId)
@@ -263,6 +319,8 @@ function MatchDetail() {
   // Extraer información de tropas si hay una casilla seleccionada
   const troopInfo = selectedTile ? getTroopInfo(selectedTile) : null;
   const isBase = selectedTile ? isPlayerBase(selectedTile) : false;
+  const currentPlayer = match.Players?.find(p => p.id === currentPlayerId);
+  const playerGodId = currentPlayer?.god_id;
 
   return (
     <div className="match-detail-container">
@@ -326,11 +384,11 @@ function MatchDetail() {
                   {isBase && (
                     <>
                       <p className="special-settlement">
-                        Base principal
+                        Asentamiento Aliado
                       </p>
                       <p>Salud: 100</p>
-                      <p>Producción de oro: 10/turno</p>
-                      {isBase && <p className="base-info">✨ Esta es tu base principal ✨</p>}
+                      <p>Producción de oro: 60/turno</p>
+                      {/* {isBase && <p className="base-info">✨ Esta es tu base principal ✨</p>} */}
                     </>
                   )}
                   
@@ -353,33 +411,49 @@ function MatchDetail() {
                 </>
               )}
               
-              {/* Opciones para crear tropas solo si es una casilla especial y es el turno del jugador */}
-              {isBase && match && match.current_player === currentPlayerId && (
-                <div className="create-troop-section">
-                  <h4>Crear tropa:</h4>
-                  <div className="troop-options">
-                    {Object.entries(TROOP_STATS).map(([troopId, troop]) => {
-                      const playerGold = match.Players?.find(p => p.id === currentPlayerId)?.gold || 0;
-                      const canAfford = playerGold >= troop.cost;
-                      
-                      return (
-                        <button 
-                          key={troopId} 
-                          className={`troop-button ${canAfford ? '' : 'disabled'}`}
-                          onClick={() => canAfford && handleCreateTroop(Number(troopId))}
-                          disabled={!canAfford || creatingTroop}
-                          title={!canAfford ? 'Oro insuficiente' : ''}
-                        >
-                          {troop.name} ({troop.cost} oro)
-                          <div className="troop-stats">
-                            <small>Vida: {troop.health} | Daño: {troop.damage}</small>
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
+            {/* Opciones para crear tropas solo si es una casilla especial y es el turno del jugador */}
+            {isBase && match && match.current_player === currentPlayerId && !troopInfo && (
+              <div className="create-troop-section">
+                <h4>Crear tropa:</h4>
+                <div className="troop-options">
+                  {Object.entries(TROOP_STATS).map(([troopId, troop]) => {
+                    const playerGold = currentPlayer?.gold || 0;
+                    const canAfford = playerGold >= troop.cost;
+
+                    // Si la tropa es skeleton y el jugador no es del dios 2 (Hades), no renderizar
+                    if (troop.name === 'skeleton' && playerGodId !== 2) return null;
+
+                    return (
+                      <button 
+                        key={troopId} 
+                        className={`troop-button ${canAfford ? '' : 'disabled'}`}
+                        onClick={() => canAfford && handleCreateTroop(Number(troopId))}
+                        disabled={!canAfford || creatingTroop}
+                        title={!canAfford ? 'Oro insuficiente' : ''}
+                      >
+                        {troop.name} ({troop.cost} oro)
+                        <div className="troop-stats">
+                          <small>Vida: {troop.health} | Daño: {troop.damage}</small>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
-              )}
+
+                {/* Botón para usar habilidad divina */}
+                {playerGodId && playerGodId != 2 && playerGodId != 3 && playerGodId != 6 && (
+                  <div className="god-action">
+                    <button 
+                      className="god-button"
+                      onClick={handleUseGodAction}
+                    >
+                      Invocar Dios ({GOD_ACTION_COSTS[playerGodId]} oro)
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
             </div>
           )}
         </div>

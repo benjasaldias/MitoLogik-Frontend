@@ -55,12 +55,12 @@ function Register() {
         onChange={(e) => setPassword(e.target.value)}
         required
       /><br />
-      <input
+      {/* <input
         type="text"
         placeholder="URL de foto de perfil"
         value={profilePic}
         onChange={(e) => setProfilePic(e.target.value)}
-      /><br />
+      /><br /> */}
       <button type="submit">Registrarse</button>
     </form>
   </main>

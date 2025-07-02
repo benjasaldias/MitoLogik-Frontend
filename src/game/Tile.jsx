@@ -42,111 +42,101 @@ const terrainSprites = {
   desert: desertSprite
 };
 
-// Mapa de tipos de unidades a sus respectivos sprites
-const unitSprites = {
-  1: swordSprite,
-  2: bowSprite,
-  3: skeletonSprite,
-  // Agregar más tipos de unidades según sea necesario
-};
-
-// Mapa de dioses a sprites de tropas (para uso futuro si es necesario asociar dioses a tropas)
-const godTroopSprites = {
-  1: troopZeusSprite,    // Zeus
-  2: troopAresSprite,    // Ares
-  3: troopPoseidonSprite, // Poseidon
-  4: troopHadesSprite,    // Hades
-  5: troopDemeterSprite,  // Demeter
-  6: troopHermesSprite,   // Hermes
-  7: troopApoloSprite     // Apolo
-};
-
-// Mapa para obtener el sprite de tropa basado en el tipo de tropa
-const troopTypeSprites = {
-  1: swordSprite,      // Guerrero
-  2: bowSprite,        // Arquero
-  3: skeletonSprite    // Esqueleto
-  // Agregar más tipos según sea necesario
-};
-
-// Mapa de tipos de aldeas a sus respectivos sprites
+// Mapa de dioses a sprites de aldeas
 const villageSprites = {
-  apolo: villageApoloSprite,
-  ares: villageAresSprite,
-  demeter: villageDemeterSprite,
-  zeus: villageZeusSprite,
-  hades: villageHadesSprite,
-  poseidon: villagePoseidonSprite,
-  hermes: villageHermesSprite,
-  enemy: villageEnemySprite,
-  abandoned: villageAbandonedSprite
+  "apolo": villageApoloSprite,
+  "ares": villageAresSprite,
+  "demeter": villageDemeterSprite,
+  "zeus": villageZeusSprite,
+  "hades": villageHadesSprite,
+  "poseidon": villagePoseidonSprite,
+  "hermes": villageHermesSprite,
+  "enemy": villageEnemySprite,
+  "abandoned": villageAbandonedSprite
 };
 
-function Tile({ tile, onSelect, isSelected, isValidMove, isVisible = true }) {
-  // Obtener el sprite correcto según el tipo de terreno
+// Mapa de dioses a sprites de tropas
+const troopSprites = {
+  "apolo": troopApoloSprite,
+  "ares": troopAresSprite,
+  "demeter": troopDemeterSprite,
+  "zeus": troopZeusSprite,
+  "hades": troopHadesSprite,
+  "poseidon": troopPoseidonSprite,
+  "hermes": troopHermesSprite,
+  "skeleton": skeletonSprite
+};
+
+// Mapa auxiliar para convertir god_id → nombre clave en villageSprites
+const godIdToName = {
+  1: 'zeus',
+  2: 'hades',
+  3: 'poseidon',
+  4: 'ares',
+  5: 'apolo',
+  6: 'hermes',
+  7: 'demeter'
+};
+
+// Mapa auxiliar para convertir god_id → nombre clave en villageSprites
+const typeToWeapon = {
+  'warrior': swordSprite,
+  'archer' : bowSprite,
+  'knight': swordSprite,
+  'skeleton': swordSprite
+};
+
+const typeIdToType = {
+  1 : 'warrior',
+  2 : 'archer',
+  3 : 'knight',
+  4 : 'skeleton'
+};
+
+
+function Tile({ currentPlayerId, tile, players = [], onSelect, isSelected, isValidMove, isVisible = true }) {
+
   const terrainSprite = terrainSprites[tile.terrain_type] || grassSprite;
-  
-  // Determinar si hay un objeto especial (árboles, rocas, etc.)
+
   const hasSpecialObject = tile.has_trees;
   const specialObjectSprite = hasSpecialObject ? treesSprite : null;
 
-  // Comprobación de existencia de tropas y formato correcto
-  // Determinar si hay tropas en la casilla
   let hasTroop = false;
   let troopSprite = null;
-    // Verificar formato de tropas (puede ser array Troops o propiedad Troop)
+  let firstTroop = null;
+  let weaponSprite = null;
+
+
   if (tile.Troops && Array.isArray(tile.Troops) && tile.Troops.length > 0) {
-    // Si es un array y tiene elementos
     hasTroop = true;
-    // Usar primera tropa para visualización
-    const firstTroop = tile.Troops[0];
-    // Intentar usar el tipo de tropa para seleccionar sprite
-    troopSprite = troopZeusSprite;
-    console.log(`Tropa renderizada en (${tile.x},${tile.y}): Tipo ${firstTroop.type}`);
-  } else if (tile.Troop) {
-    // Si es un objeto individual de tropa
-    hasTroop = true;
-    troopSprite =  troopZeusSprite;
-    console.log(`Tropa (singular) renderizada en (${tile.x},${tile.y}): Tipo ${tile.Troop.type}`);
-  } else if (tile.troops && Array.isArray(tile.troops) && tile.troops.length > 0) {
-    // Comprobación alternativa para lowercase 'troops'
-    hasTroop = true;
-    troopSprite = troopZeusSprite;
-  } else if (tile.troop) {
-    // Comprobación alternativa para lowercase 'troop'
-    hasTroop = true;
-    troopSprite = troopZeusSprite;
-  } else {
-    // Fallback para propiedad legacy 'unit'
-    if (tile.unit) {
-      hasTroop = true;
-      troopSprite = troopZeusSprite;
+    firstTroop = tile.Troops[0];
+    // alert(tile.Troops[0].id);
+    troopSprite = troopSprites[godIdToName[tile.Troops[0].god_id]];
+    if (tile.Troops[0].type == 4) {
+      troopSprite = skeletonSprite;
+    }
+    weaponSprite = typeToWeapon[typeIdToType[tile.Troops[0].type]];
+  } 
+
+  const isEnemyTroop = firstTroop && firstTroop.player_id !== currentPlayerId;
+
+  let hasSettlement = false;
+  let settlementSprite = null;
+  const isSpecialCoord = (tile.x === 1 && tile.y === 1) || (tile.x === 12 && tile.y === 12);
+
+  if (tile.Settlement || isSpecialCoord) {
+    hasSettlement = true;
+
+    if (tile.player_id != null) {
+      const owner = players.find(p => p.id === tile.player_id);
+      const godKey = godIdToName[tile.Settlement.god_id];
+      settlementSprite = villageSprites[godKey] || villageSprites['zeus'];
+      // alert(tile.Settlement);
+    } else {
+      settlementSprite = villageSprites['abandoned'];
     }
   }
 
-  // Determinar si hay una aldea y qué sprite mostrar
-  // Comprobación para settlements (similar a tropas)
-  let hasSettlement = false;
-  let settlementSprite = null;
-
-  // Verificar diferentes formatos posibles para settlements
-  const isSpecialCoord = (tile.x === 1 && tile.y === 1) || (tile.x === 12 && tile.y === 12);
-  
-  if (tile.Settlement) {
-    // Caso 1: Hay un objeto Settlement directo
-    hasSettlement = true;
-    settlementSprite = villageSprites['apolo']; // O usar tile.Settlement.type si existe
-  } else if (tile.settlement) {
-    // Caso 2: Lowercase 'settlement'
-    hasSettlement = true;
-    settlementSprite = villageSprites['apolo'];
-  } else if (isSpecialCoord) {
-    // Caso 3: Forzar asentamientos en coordenadas especiales
-    hasSettlement = true;
-    settlementSprite = villageSprites['apolo'];
-  }
-    
-  // Clases para estilos según el estado de la casilla
   const tileClasses = `
     game-tile 
     ${isSelected ? 'selected' : ''} 
@@ -158,31 +148,40 @@ function Tile({ tile, onSelect, isSelected, isValidMove, isVisible = true }) {
     <div 
       className={tileClasses}
       onClick={() => onSelect(tile)}
-    >      {isVisible ? (
+    >
+      {isVisible ? (
         <div className="tile-content" style={{ backgroundImage: `url(${terrainSprite})` }}>
-          {/* Renderizar objeto especial si está presente */}
           {hasSpecialObject && (
             <div className="tile-special-object" style={{ backgroundImage: `url(${specialObjectSprite})` }}></div>
           )}
-          
-          {/* Renderizar aldea si está presente o es una coordenada especial */}
+
           {hasSettlement && (
             <div className="tile-village" style={{ backgroundImage: `url(${settlementSprite})` }}></div>
           )}
-          
-          {/* Renderizar tropa si está presente - ahora por encima de la aldea */}
+
           {hasTroop && (
-            <div className="tile-unit" style={{ backgroundImage: `url(${troopSprite})` }}></div>
+            <div
+              className={`tile-unit 
+                ${firstTroop?.moves_used === firstTroop?.speed ? 'unit-exhausted' : ''} 
+              `}
+            >
+              <div
+                className={`troop-sprite ${isEnemyTroop ? 'enemy-glow' : ''} ${firstTroop?.type === 3 ? 'knight-size' : ''}`}
+                style={{ backgroundImage: `url(${troopSprite})` }}
+              ></div>
+              <div
+                className="weapon-overlay"
+                style={{ backgroundImage: `url(${weaponSprite})` }}
+              ></div>
+            </div>
           )}
           
-          {/* Mostrar coordenadas para debug */}
           <span className="tile-coordinates">
             {tile.x},{tile.y}
           </span>
         </div>
       ) : (
         <div className="tile-content fog-content">
-          {/* Contenido para niebla de guerra */}
           <div className="fog-of-war-overlay" style={{ backgroundImage: `url(${fogWarSprite})` }}></div>
         </div>
       )}

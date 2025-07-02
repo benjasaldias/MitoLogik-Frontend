@@ -1,0 +1,139 @@
+.game-over-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: rgba(25, 25, 35, 0.9);
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  color: white;
+  text-align: center;
+}
+
+.game-over-container h1 {
+  font-size: 2.5rem;
+  color: gold;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  margin-bottom: 2rem;
+}
+
+.game-result {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.winner-section, .loser-section {
+  flex: 1;
+  padding: 1.5rem;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.winner-section {
+  background: linear-gradient(135deg, rgba(25, 118, 210, 0.3), rgba(21, 101, 192, 0.7));
+  border: 2px solid gold;
+  transform: scale(1.05);
+}
+
+.loser-section {
+  background: linear-gradient(135deg, rgba(211, 47, 47, 0.3), rgba(183, 28, 28, 0.7));
+  border: 2px solid #777;
+  opacity: 0.9;
+}
+
+.winner-section h2 {
+  color: gold;
+  font-size: 1.8rem;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.7);
+}
+
+.loser-section h2 {
+  color: #ccc;
+  font-size: 1.5rem;
+}
+
+.player-card {
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.player-card h3 {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.player-card.winner h3 {
+  color: gold;
+}
+
+.player-card.loser h3 {
+  color: #aaa;
+}
+
+.versus {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.7);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+}
+
+.match-info {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1.5rem 0;
+}
+
+.match-info h3 {
+  color: #4fc3f7;
+  margin-bottom: 0.5rem;
+}
+
+.back-button {
+  background: linear-gradient(135deg, #2196f3, #1976d2);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.8rem 1.5rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.back-button:hover {
+  background: linear-gradient(135deg, #1976d2, #0d47a1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  font-size: 1.5rem;
+  color: #4fc3f7;
+}
+
+@media (max-width: 768px) {
+  .game-result {
+    flex-direction: column;
+  }
+  
+  .winner-section, .loser-section {
+    width: 100%;
+  }
+  
+  .versus {
+    margin: 1rem 0;
+  }
+  
+  .game-over-container h1 {
+    font-size: 2rem;
+  }
+}

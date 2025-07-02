@@ -135,7 +135,7 @@ function Lobby() {
 
       if (!res.ok) throw new Error('No se pudo actualizar el dios');
 
-      alert('Dios actualizado exitosamente');
+      // alert('Dios actualizado exitosamente');
 
       // Refrescar los jugadores
       const updated = await fetch(`${import.meta.env.VITE_API_URL}/matches/${id}`, {
@@ -177,29 +177,26 @@ function Lobby() {
           />
         )}
 
-        {/* Información sobre quién puede iniciar la partida */}
+        {/* Información sobre quién puede iniciar la partida, y el botón */}
         {match.state === 0 && (
-          <div className="host-info">
-            <p>
-              {user && user.id === match.host_user_id 
-                ? "Eres el anfitrión de esta partida" 
-                : `El anfitrión de esta partida es: ${match.host_username || "ID: " + match.host_user_id}`}
-            </p>
-          </div>
-        )}
-        
-        {/* Botón para iniciar la partida (solo visible para el host) */}
-        {user && user.id && match.host_user_id && 
-         user.id.toString() === match.host_user_id.toString() && 
-         match.state === 0 && (
-          <button 
-            className="start-game-button" 
-            onClick={handleStart}
-            disabled={players.length < 2}
-          >
-            {players.length < 2 ? "Esperando más jugadores..." : "Iniciar partida"}
-          </button>
-        )}
+        <div className="host-info">
+          <p>
+            {user && user.id === match.host_user_id 
+              ? "Eres el anfitrión de esta partida" 
+              : `El anfitrión de esta partida es: ${match.host_username || "ID: " + match.host_user_id}`}
+          </p>
+          {user && user.id === match.host_user_id && (
+            <button 
+              className="start-game-button" 
+              onClick={handleStart}
+              disabled={players.length < 2}
+            >
+              {players.length < 2 ? "Esperando más jugadores..." : "Iniciar partida"}
+            </button>
+          )}
+        </div>
+      )}
+
       </main>
     </div>
   );

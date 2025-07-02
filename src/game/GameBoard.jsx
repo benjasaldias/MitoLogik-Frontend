@@ -5,6 +5,7 @@ import './GameBoard.css';
 
 // Importamos el sprite para la niebla de guerra
 import fogWarSprite from '../assets/fog_war_sprite.png';
+import MatchDetail from '../pages/MatchDetail';
 
 function GameBoard({ matchId, onTileSelect, currentPlayerId }) {
   const [tiles, setTiles] = useState([]);
@@ -87,6 +88,10 @@ function GameBoard({ matchId, onTileSelect, currentPlayerId }) {
                   [x - 1, y],
                   [x, y + 1],
                   [x, y - 1],
+                  [x + 1, y + 1],
+                  [x + 1, y - 1],
+                  [x - 1, y + 1],
+                  [x - 1, y - 1],
                 ];
 
                 for (const [adjX, adjY] of adjacents) {
@@ -187,17 +192,67 @@ function GameBoard({ matchId, onTileSelect, currentPlayerId }) {
       // Mostrar notificación de éxito
       setNotification({
         message: '¡Tropa movida con éxito!',
-        type: 'success'
+        type: 'action'
       });
       
     } catch (err) {
       console.error('Error al mover tropa:', err);
-      setNotification({
-        message: 'No se pudo mover la tropa: ' + err.message,
-        type: 'error'
-      });
+      // setNotification({
+      //   message: 'No se pudo mover la tropa: ' + err.message,
+      //   type: 'error'
+      // });
     }
-  };  // Manejar la selección de casillas
+  };
+  
+  const attackTroop = async (fromTileId, toTileId) => {
+    try {
+      console.log(`Intentando atacar desde tile ${fromTileId} a tile ${toTileId}`);
+
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/matches/${matchId}/actions`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          player_id: currentPlayerId,
+          type: 'attack',
+          fromTileId,
+          toTileId
+        })
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        console.error('Detalles del error (ataque):', errorData);
+        console.log(errorData);
+        throw new Error('No se pudo realizar el ataque');
+      }
+
+      // Actualizar tablero tras el ataque
+      const data = await res.json();
+      console.log('Respuesta ataque:', data);
+
+      const updatedTilesRes = await fetch(`${import.meta.env.VITE_API_URL}/matches/${matchId}/tiles`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (updatedTilesRes.ok) {
+        const tilesData = await updatedTilesRes.json();
+        setTiles(tilesData);
+      }
+
+      setNotification({ message: '¡Ataque realizado!', type: 'action' });
+    } catch (err) {
+      console.error('Error al atacar:', err);
+      setNotification({ message: 'Error al atacar: ' + err.message, type: 'error' });
+    }
+  };
+
+  
+  // Manejar la selección de casillas
   const handleTileSelect = (tile) => {
     // No procesar selecciones si no hay ID de jugador
     if (!currentPlayerId) {
@@ -238,10 +293,27 @@ function GameBoard({ matchId, onTileSelect, currentPlayerId }) {
       
       // Si hay una tropa propia en el origen, intentar moverla
       if (hasTroopInSource && sourceTroopPlayerId === currentPlayerId) {
-        console.log(`Intentando mover tropa de ${selectedTile.id} a ${tile.id}`);
-        moveTroop(selectedTile.id, tile.id);
-      } else {
-        console.log('No puedes mover desde una casilla sin tropa propia');
+        const isAdjacent =
+          Math.abs(tile.x - selectedTile.x) + Math.abs(tile.y - selectedTile.y) === 1;
+
+        // Hay enemigo en la tile destino?
+        let hasEnemyTroop = false;
+        if (tile.Troops[0] || (tile.player_id != null && tile.player_id != currentPlayerId)) {
+          hasEnemyTroop =
+            (tile.Troops && tile.Troops[0]?.player_id !== currentPlayerId) ||
+            (tile.Troop && tile.Troop.player_id !== currentPlayerId) ||
+            (tile.troops && tile.troops[0]?.player_id !== currentPlayerId) ||
+            (tile.troop && tile.troop.player_id !== currentPlayerId) ||
+            (tile.unit && tile.unit.player_id !== currentPlayerId) ||
+            (tile.player_id != null && tile.player_id != currentPlayerId); // caso settlement enemigo
+        }
+        if (hasEnemyTroop) {
+          console.log('Iniciando ataque a tropa enemiga...');
+          attackTroop(selectedTile.id, tile.id);
+        } else {
+          console.log(`Intentando mover tropa de ${selectedTile.id} a ${tile.id}`);
+          moveTroop(selectedTile.id, tile.id);
+        }
       }
       
       // Limpiamos la selección en cualquier caso
@@ -270,7 +342,7 @@ function GameBoard({ matchId, onTileSelect, currentPlayerId }) {
     }
     
     // Si hay una tropa del jugador actual en la casilla, mostrar posibles movimientos
-    if (hasPlayerUnit) {
+    if (hasPlayerUnit && tile.Troops[0].moves_used < tile.Troops[0].speed) {
       // Calculamos nosotros los movimientos válidos
       const possibleMoves = calculateValidMoves(tile, tiles);
       setValidMoves(possibleMoves);
@@ -372,6 +444,7 @@ function GameBoard({ matchId, onTileSelect, currentPlayerId }) {
       }}>
         {sortedTiles.map(tile => (
           <Tile 
+            currentPlayerId={currentPlayerId}
             key={tile.id} 
             tile={tile} 
             onSelect={handleTileSelect} 

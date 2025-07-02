@@ -10,3 +10,12 @@ Currently, two official plugins are available:
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+# Link Netlify
+
+https://mitologik.netlify.app
+
+
+# Consideraciones
+
+Errores de Netlify no permiten refrescar la página cuando el usuario se encuentra en un sitio que no sea la Home Page ('/'). Por ello si el usuario ve la necesidad de refrescar la página, se debe volver a la Home Page para a través de los botones llegar al sitio previo.

@@ -21,7 +21,7 @@ function MatchCreate() {
         },
         body: JSON.stringify({
           name: name,
-          god_id: parseInt(godId)
+          god_id: parseInt(1)
         })
       });
 
@@ -52,13 +52,14 @@ function MatchCreate() {
             required
           /><br />
 
-          <input
+          {/* <input 
             type="number"
             placeholder="ID del dios"
             value={godId}
             onChange={(e) => setGodId(e.target.value)}
             required
           /><br />
+          */}
 
           <button type="submit">Crear</button>
         </form>
