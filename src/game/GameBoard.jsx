@@ -190,10 +190,10 @@ function GameBoard({ matchId, onTileSelect, currentPlayerId }) {
       setValidMoves([]);
       
       // Mostrar notificación de éxito
-      setNotification({
-        message: '¡Tropa movida con éxito!',
-        type: 'action'
-      });
+      // setNotification({
+      //   message: '¡Tropa movida con éxito!',
+      //   type: 'action'
+      // });
       
     } catch (err) {
       console.error('Error al mover tropa:', err);
